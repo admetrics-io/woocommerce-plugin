@@ -1,6 +1,7 @@
 {
     "require": {
-        "php": "^7.4 || ^8.0"
+        "php": "^7.4 || ^8.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "johnpbloch/wordpress-core": "~6.3.0"
