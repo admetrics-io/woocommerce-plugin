@@ -1,16 +1,19 @@
-.PHONY: clean
-clean:
-	rm -rf ./node_modules
-
 .PHONY: setup
-setup: clean
+setup:
 	npm install
 
 .PHONY: dev
-dev:
+dev: setup
 	npx wp-env start
 	npx wp-env run cli wp import /var/www/html/wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=create
 
 .PHONY: down
 down:
 	npx wp-env down
+
+.PHONY: clean
+clean:
+	npx wp-env clean all
+	rm -rf ./node_modules
+	rm -rf ./vendor
+	rm -f ./package-lock.json

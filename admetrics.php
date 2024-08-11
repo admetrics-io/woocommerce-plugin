@@ -29,6 +29,8 @@ if (!defined('ABSPATH')) {
 if (!class_exists('AdmetricsDataStudio')) {
     class AdmetricsDataStudio
     {
+        const VERSION = "0.1.3";
+
         public string $plugin_slug;
         public string $version;
         public string $cache_key;
@@ -37,15 +39,24 @@ if (!class_exists('AdmetricsDataStudio')) {
         public function __construct()
         {
             $this->plugin_slug = plugin_basename(__DIR__);
-            $this->version = '0.1.3';
+            $this->version = self::VERSION;
             $this->cache_key = 'admetrics_update';
             $this->cache_allowed = false;
 
+            //add_filter('auto_update_plugin', array($this, 'auto_update'), 10, 2);
             add_filter('plugins_api', array($this, 'info'), 20, 3);
             add_filter('site_transient_update_plugins', array($this, 'update'));
             add_action('upgrader_process_complete', array($this, 'purge'), 10, 2);
             add_action('wp_head', array($this, 'admetrics_wp_head'));
             add_action('woocommerce_thankyou', array($this, 'admetrics_woocommerce_thankyou'), 10, 1);
+        }
+
+        public function auto_update($update, object $item)
+        {
+            if ($this->plugin_slug === $item->slug) {
+                return true;
+            }
+            return $update;
         }
 
         public function request()
@@ -137,9 +148,6 @@ if (!class_exists('AdmetricsDataStudio')) {
 
             if (
                 $remote
-                && version_compare($this->version, $remote->version, '<')
-                && version_compare($remote->requires, get_bloginfo('version'), '<=')
-                && version_compare($remote->requires_php, PHP_VERSION, '<')
             ) {
                 $res = new stdClass();
                 $res->slug = $this->plugin_slug;
@@ -148,7 +156,15 @@ if (!class_exists('AdmetricsDataStudio')) {
                 $res->tested = $remote->tested;
                 $res->package = $remote->download_url;
 
-                $transient->response[$res->plugin] = $res;
+                if (
+                    version_compare($this->version, $remote->version, '<')
+                    && version_compare($remote->requires, get_bloginfo('version'), '<=')
+                    && version_compare($remote->requires_php, PHP_VERSION, '<')
+                ) {
+                    $transient->response[$res->plugin] = $res;
+                } else {
+                    $transient->no_update[$res->plugin] = $res;
+                }
             }
 
             return $transient;
