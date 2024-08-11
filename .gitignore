@@ -1,0 +1,5 @@
+/.idea/
+/node_modules/
+/vendor/
+/.wp-env.override.json
+/package-lock.json
