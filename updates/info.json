@@ -1,0 +1,21 @@
+{
+  "name" : "Admetrics Data Studio",
+  "slug" : "admetrics",
+  "author" : "Admetrics GmbH",
+  "author_profile" : "https://www.admetrics.io",
+  "version" : "0.1.1",
+  "download_url" : "https://github.com/admetrics-io/woocommerce-plugin/archive/refs/tags/0.1.1.zip",
+  "requires" : "6.3",
+  "tested" : "6.3",
+  "requires_php" : "7.4",
+  "last_updated" : "2024-08-11 21:23:00",
+  "sections" : {
+    "description" : "Sample description",
+    "installation" : "Installation guide",
+    "changelog" : "Initial release"
+  },
+  "banners" : {
+    "low" : "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-low-resolution.png",
+    "high" : "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-high-resolution.png"
+  }
+}
