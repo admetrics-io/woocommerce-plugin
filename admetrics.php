@@ -11,7 +11,7 @@
  * Plugin Name:       Admetrics Data Studio
  * Plugin URI:        https://github.com/admetrics-io/woocommerce-plugin
  * Description:       Connects Admetrics Data Studio with your WooCommerce installation.
- * Version:           0.1.3
+ * Version:           0.1.4
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 if (!class_exists('AdmetricsDataStudio')) {
     class AdmetricsDataStudio
     {
-        const VERSION = "0.1.3";
+        const VERSION = "0.1.4";
 
         public string $plugin_slug;
         public string $version;
