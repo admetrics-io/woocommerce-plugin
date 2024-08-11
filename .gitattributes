@@ -1,10 +1,9 @@
 # Exclude from release tarball
-/admetrics/.gitignore export-ignore
-/admetrics/.wp-env.json export-ignore
-/admetrics/composer.json export-ignore
-/admetrics/composer.lock export-ignore
-/admetrics/Makefile export-ignore
-/admetrics/package.json export-ignore
 /updates export-ignore
 /.gitattributes export-ignore
 /.gitignore export-ignore
+/.wp-env.json export-ignore
+/composer.json export-ignore
+/composer.lock export-ignore
+/Makefile export-ignore
+/package.json export-ignore
