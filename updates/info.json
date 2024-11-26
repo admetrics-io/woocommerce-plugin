@@ -1,21 +1,21 @@
 {
-  "name" : "Admetrics Data Studio",
-  "slug" : "admetrics",
-  "author" : "Admetrics GmbH",
-  "author_profile" : "https://www.admetrics.io",
-  "version" : "0.1.5",
-  "download_url" : "https://github.com/admetrics-io/woocommerce-plugin/archive/refs/tags/0.1.5.zip",
-  "requires" : "6.5",
-  "tested" : "6.5",
-  "requires_php" : "8.2",
-  "last_updated" : "2024-11-22 21:26:00",
-  "sections" : {
-    "description" : "Connects Admetrics Data Studio with your WooCommerce installation.",
-    "installation" : "",
-    "changelog" : "Will be released with 1.0.0"
+  "name": "Admetrics Data Studio",
+  "slug": "admetrics",
+  "author": "Admetrics GmbH",
+  "author_profile": "https://www.admetrics.io",
+  "version": "0.1.5",
+  "download_url": "https://github.com/admetrics-io/woocommerce-plugin/archive/refs/tags/0.1.5.zip",
+  "requires": "6.5",
+  "tested": "6.5",
+  "requires_php": "7.0",
+  "last_updated": "2024-11-22 21:26:00",
+  "sections": {
+    "description": "Connects Admetrics Data Studio with your WooCommerce installation.",
+    "installation": "",
+    "changelog": "Will be released with 1.0.0"
   },
-  "banners" : {
-    "low" : "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-low-resolution.png",
-    "high" : "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-high-resolution.png"
+  "banners": {
+    "low": "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-low-resolution.png",
+    "high": "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-high-resolution.png"
   }
 }

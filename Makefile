@@ -29,3 +29,14 @@ dev-package:
 	rm -f admetrics-woocommerce-plugin.zip
 	cd tmp; zip -r ../admetrics-woocommerce-plugin.zip ./*; cd ..
 	rm -rf tmp
+
+.PHONY: release
+release:
+	@if echo "$(VERSION)" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$$'; then \
+  		sed -i '' -E 's/"version": "[0-9]+\.[0-9]+\.[0-9]+"/"version": "$(VERSION)"/' ./updates/info.json; \
+  		sed -i '' -E 's/[0-9]+\.[0-9]+\.[0-9]+\.zip/$(VERSION).zip/' ./updates/info.json; \
+  		sed -i '' -E 's/\* Version:           ([0-9]+\.[0-9]+\.[0-9]+)/* Version:           $(VERSION)/' ./admetrics.php; \
+  		sed -i '' -E 's/const VERSION = "([0-9]+\.[0-9]+\.[0-9]+)"/const VERSION = "$(VERSION)"/' ./admetrics.php; \
+    else \
+        echo "Missing or invalid VERSION"; \
+    fi
