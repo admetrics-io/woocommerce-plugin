@@ -17,3 +17,15 @@ clean:
 	rm -rf ./node_modules
 	rm -rf ./vendor
 	rm -f ./package-lock.json
+
+.PHONY: dev-package
+dev-package:
+	rm -rf tmp
+	mkdir tmp
+	cp -R updates tmp
+	cp admetrics.php tmp
+	cp admetrics-data-studio-integration.php tmp
+	cp changelog.txt tmp
+	rm -f admetrics-woocommerce-plugin.zip
+	cd tmp; zip -r ../admetrics-woocommerce-plugin.zip ./*; cd ..
+	rm -rf tmp

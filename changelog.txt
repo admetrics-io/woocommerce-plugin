@@ -1,0 +1,5 @@
+*** WooCommerce Extension Name Changelog ***
+
+YYYY-MM-DD - version 1.0.0
+* Initial release
+* Changelog formatted according to https://developer.woocommerce.com/docs/formatting-for-changelog-txt/

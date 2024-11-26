@@ -1,9 +1,25 @@
 {
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"https://wpackagist.org",
+            "only": [
+                "wpackagist-plugin/*",
+                "wpackagist-theme/*"
+            ]
+        }
+    ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.0 || ^8.0",
         "ext-json": "*"
     },
     "require-dev": {
-        "johnpbloch/wordpress-core": "~6.3.0"
+        "johnpbloch/wordpress-core": "^6.5",
+        "wpackagist-plugin/woocommerce": "^9.4"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": false
+        }
     }
 }

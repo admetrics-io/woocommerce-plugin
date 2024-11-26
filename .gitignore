@@ -1,6 +1,7 @@
 /.idea/
-
 /node_modules/
+/playground/
 /vendor/
 /.wp-env.override.json
+/composer.lock
 /package-lock.json
