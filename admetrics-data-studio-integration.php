@@ -4,6 +4,7 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
 
     class AdmetricsDataStudio_Integration extends WC_Integration
     {
+        private $tracking_enabled = "";
         private $sid = "";
         private $src = "";
         private $endpoint = "";
@@ -31,7 +32,7 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
             $this->init_settings();
 
             // Define user set variables.
-            $this->enabled = $this->get_option('enabled');
+            $this->tracking_enabled = $this->get_option('tracking_enabled');
             $this->sid = $this->get_option('sid');
             $this->src = $this->get_option('src');
             $this->endpoint = $this->get_option('endpoint');
@@ -54,7 +55,7 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
         public function init_form_fields()
         {
             $this->form_fields = array(
-                'enabled' => array(
+                'tracking_enabled' => array(
                     'title' => 'Enabled',
                     'type' => 'checkbox',
                     'default' => 'no',

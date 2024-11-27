@@ -11,7 +11,7 @@
  * Plugin Name:       Admetrics Data Studio
  * Plugin URI:        https://github.com/admetrics-io/woocommerce-plugin
  * Description:       Connects Admetrics Data Studio with your WooCommerce installation.
- * Version:           0.1.5
+ * Version:           0.1.6
  * Requires at least: 6.3
  * Requires PHP:      7.0
  * Requires Plugins:  woocommerce
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 if (!class_exists('AdmetricsDataStudio')) {
     class AdmetricsDataStudio
     {
-        const VERSION = "0.1.5";
+        const VERSION = "0.1.6";
 
         public $plugin_slug;
         public $version;
@@ -226,7 +226,7 @@ if (!class_exists('AdmetricsDataStudio')) {
             $option_key = $integration_class->get_option_key();
             $current_settings = get_option($option_key, array());
 
-            if (!$current_settings["enabled"] || $current_settings["enabled"] == "no") {
+            if (!$current_settings["tracking_enabled"] || $current_settings["tracking_enabled"] == "no") {
                 return;
             }
 
@@ -323,7 +323,7 @@ EOD;
             $option_key = $integration_class->get_option_key();
             $current_settings = get_option($option_key, array());
 
-            if (!$current_settings["enabled"] || $current_settings["enabled"] == "no") {
+            if (!$current_settings["tracking_enabled"] || $current_settings["tracking_enabled"] == "no") {
                 return;
             }
 
