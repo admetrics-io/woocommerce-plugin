@@ -47,7 +47,9 @@ release:
 			git commit -am 'Release $(VERSION)'; \
 			echo "Creating package"; \
 			make package; \
-			echo "All done. Please create a new release for $(VERSION) on https://github.com/admetrics-io/woocommerce-plugin/releases/ and upload admetrics-data-studio.zip as binary to it."; \
+			echo "All done."; \
+			echo "Please check the last commit as well as the generated admetrics-data-studio.zip."; \
+			echo "If everything looks good, push the commit to origin and create a a new release for $(VERSION) on https://github.com/admetrics-io/woocommerce-plugin/releases/ and upload admetrics-data-studio.zip as binary to it."; \
 		else \
         	echo "Working directory not clean"; \
 		fi \
