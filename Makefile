@@ -35,11 +35,15 @@ dev-package:
 .PHONY: release
 release:
 	@if echo "$(VERSION)" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$$'; then \
-  		sed -i '' -E 's/"last_updated": "[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"/"last_updated": "$(TIMESTAMP)"/' ./updates/info.json; \
-  		sed -i '' -E 's/"version": "[0-9]+\.[0-9]+\.[0-9]+"/"version": "$(VERSION)"/' ./updates/info.json; \
-  		sed -i '' -E 's/[0-9]+\.[0-9]+\.[0-9]+\.zip/$(VERSION).zip/' ./updates/info.json; \
-  		sed -i '' -E 's/\* Version:           ([0-9]+\.[0-9]+\.[0-9]+)/* Version:           $(VERSION)/' ./admetrics.php; \
-  		sed -i '' -E 's/const VERSION = "([0-9]+\.[0-9]+\.[0-9]+)"/const VERSION = "$(VERSION)"/' ./admetrics.php; \
+  		if [ -z "$(shell git status --porcelain)" ]; then \
+			sed -i '' -E 's/"last_updated": "[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"/"last_updated": "$(TIMESTAMP)"/' ./updates/info.json; \
+			sed -i '' -E 's/"version": "[0-9]+\.[0-9]+\.[0-9]+"/"version": "$(VERSION)"/' ./updates/info.json; \
+			sed -i '' -E 's/[0-9]+\.[0-9]+\.[0-9]+\.zip/$(VERSION).zip/' ./updates/info.json; \
+			sed -i '' -E 's/\* Version:           ([0-9]+\.[0-9]+\.[0-9]+)/* Version:           $(VERSION)/' ./admetrics.php; \
+			sed -i '' -E 's/const VERSION = "([0-9]+\.[0-9]+\.[0-9]+)"/const VERSION = "$(VERSION)"/' ./admetrics.php; \
+		else \
+        	echo "Working directory not clean"; \
+		fi \
     else \
         echo "Missing or invalid VERSION"; \
     fi
