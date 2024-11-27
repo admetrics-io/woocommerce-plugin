@@ -40,7 +40,7 @@ release:
 			echo "Adjusting file contents for new version"; \
 			sed -i '' -E 's/"last_updated": "[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+"/"last_updated": "$(TIMESTAMP)"/' ./updates/info.json; \
 			sed -i '' -E 's/"version": "[0-9]+\.[0-9]+\.[0-9]+"/"version": "$(VERSION)"/' ./updates/info.json; \
-			sed -i '' -E 's/[0-9]+\.[0-9]+\.[0-9]+\.zip/$(VERSION).zip/' ./updates/info.json; \
+			sed -i '' -E 's/download\/[0-9]+\.[0-9]+\.[0-9]+\/admetrics-data-studio.zip/download\/$(VERSION)\/admetrics-data-studio.zip/' ./updates/info.json; \
 			sed -i '' -E 's/\* Version:           ([0-9]+\.[0-9]+\.[0-9]+)/* Version:           $(VERSION)/' ./admetrics.php; \
 			sed -i '' -E 's/const VERSION = "([0-9]+\.[0-9]+\.[0-9]+)"/const VERSION = "$(VERSION)"/' ./admetrics.php; \
 			echo "Committing changes"; \

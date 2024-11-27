@@ -4,7 +4,7 @@
   "author": "Admetrics GmbH",
   "author_profile": "https://www.admetrics.io/",
   "version": "0.1.7",
-  "download_url": "https://github.com/admetrics-io/woocommerce-plugin/archive/refs/tags/0.1.7.zip",
+  "download_url": "https://github.com/admetrics-io/woocommerce-plugin/releases/download/0.1.7/admetrics-data-studio.zip",
   "requires": "6.5",
   "tested": "6.5",
   "requires_php": "7.0",
