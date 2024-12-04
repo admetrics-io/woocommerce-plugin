@@ -231,18 +231,18 @@ if (!class_exists('AdmetricsDataStudio')) {
             }
 
             $current_customer = WC()->customer;
-            $sid = $current_settings["sid"] || "";
-            $src = $current_settings["src"] || "";
-            $endpoint = $current_settings["endpoint"] || "";
-            $cn = $current_settings["cn"] || "";
-            $cv = $current_settings["cv"] || "";
-            $cv2 = $current_settings["cv2"] || "";
-            $pa_vendor = $current_settings["pa_vendor"] || "";
-            $pa_mpid = $current_settings["pa_mpid"] || "";
-            $ss_mpid = $current_settings["ss_mpid"] || "";
-            $ss_tkpid = $current_settings["ss_tkpid"] || "";
-            $ss_scpid = $current_settings["ss_scpid"] || "";
-            $customer_id = $current_customer ? $current_customer->get_id() : "";
+            $sid = $current_settings["sid"] ?? "";
+            $src = $current_settings["src"] ?? "";
+            $endpoint = $current_settings["endpoint"] ?? "";
+            $cn = $current_settings["cn"] ?? "";
+            $cv = $current_settings["cv"] ?? "";
+            $cv2 = $current_settings["cv2"] ?? "";
+            $pa_vendor = $current_settings["pa_vendor"] ?? "";
+            $pa_mpid = $current_settings["pa_mpid"] ?? "";
+            $ss_mpid = $current_settings["ss_mpid"] ?? "";
+            $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
+            $ss_scpid = $current_settings["ss_scpid"] ?? "";
+            $customer_id = $current_customer ? $current_customer->get_id() : 0;
             if ($customer_id < 1) {
                 $customer_id = "";
             }
@@ -327,17 +327,17 @@ EOD;
                 return;
             }
 
-            $sid = $current_settings["sid"] || "";
-            $src = $current_settings["src"] || "";
-            $endpoint = $current_settings["endpoint"] || "";
-            $cn = $current_settings["cn"] || "";
-            $cv = $current_settings["cv"] || "";
-            $cv2 = $current_settings["cv2"] || "";
-            $pa_vendor = $current_settings["pa_vendor"] || "";
-            $pa_mpid = $current_settings["pa_mpid"] || "";
-            $ss_mpid = $current_settings["ss_mpid"] || "";
-            $ss_tkpid = $current_settings["ss_tkpid"] || "";
-            $ss_scpid = $current_settings["ss_scpid"] || "";
+            $sid = $current_settings["sid"] ?? "";
+            $src = $current_settings["src"] ?? "";
+            $endpoint = $current_settings["endpoint"] ?? "";
+            $cn = $current_settings["cn"] ?? "";
+            $cv = $current_settings["cv"] ?? "";
+            $cv2 = $current_settings["cv2"] ?? "";
+            $pa_vendor = $current_settings["pa_vendor"] ?? "";
+            $pa_mpid = $current_settings["pa_mpid"] ?? "";
+            $ss_mpid = $current_settings["ss_mpid"] ?? "";
+            $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
+            $ss_scpid = $current_settings["ss_scpid"] ?? "";
             $order_id = $order->get_id();
             $order_number = $order->get_order_number();
             $customer_id = $order->get_customer_id();
