@@ -4,7 +4,7 @@
 # Starting your local WP environment 
 make dev
 
-# Stopping ayour local WP environment
+# Stopping your local WP environment
 make down
 
 # Cleanup your local system (removing all generated/downloaded files and Docker containers)

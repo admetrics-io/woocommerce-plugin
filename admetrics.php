@@ -63,7 +63,7 @@ if (!class_exists('AdmetricsDataStudio')) {
                     register_rest_route('admetrics-data-studio/v1', '/settings', array(
                         'methods' => 'POST',
                         'callback' => [AdmetricsDataStudio_Integration::class, 'update_settings'],
-                        'permission_callback' => function () {
+                        'permission_callback' => function (){
 //                            if (!wc_rest_check_manager_permissions('settings', 'read')) {
 //                                return new WP_Error(
 //                                    'admetrics_data_studio_401',
@@ -74,7 +74,14 @@ if (!class_exists('AdmetricsDataStudio')) {
                             return true;
                         },
                     ));
+                    add_filter('woocommerce_rest_prepare_shop_order_object', [$this, 'add_customer_order_index']);
                 }, 20);
+//                add_filter('woocommerce_rest_check_permissions', function($permission, $context, $object_id, $post_type) {
+//                    if ($post_type === 'shop_order') {
+//                        return true; // Allow all requests to the orders endpoint
+//                    }
+//                    return $permission;
+//                }, 10, 4);
             }
         }
 
@@ -82,6 +89,34 @@ if (!class_exists('AdmetricsDataStudio')) {
         {
             $integrations[] = 'AdmetricsDataStudio_Integration';
             return $integrations;
+        }
+
+        public function add_customer_order_index(WP_REST_Response $response): WP_REST_Response
+        {
+            $customer_id = $response->data['customer_id'];
+            $order_status = $response->data['status'];
+            $statuses = ['pending', 'processing', 'on-hold', 'completed', 'refunded'];
+            $customer_order_index = null;
+            if (in_array($order_status, $statuses)) {
+                if ($customer_id) {
+                    $customer_orders = wc_get_orders([
+                        'customer_id' => $customer_id,
+                        'status' => $statuses,
+                        'orderby' => 'date',
+                        'order' => 'ASC',
+                        'return' => 'ids',
+                    ]);
+                    $order_index = array_search($response->data['id'], $customer_orders);
+                    if ($order_index !== false) {
+                        $customer_order_index = $order_index + 1;
+                    }
+                } else {
+                    $customer_order_index = 1;
+                }
+            }
+            $response->data['admetrics_customer_order_index'] = $customer_order_index;
+
+            return $response;
         }
 
         public function auto_update($update, $item)
