@@ -277,6 +277,8 @@ if (!class_exists('AdmetricsDataStudio')) {
             $ss_mpid = $current_settings["ss_mpid"] ?? "";
             $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
             $ss_scpid = $current_settings["ss_scpid"] ?? "";
+            $ss_ob = $current_settings["ss_scpid"] ?? "-";
+            $ss_ga = $current_settings["ss_scpid"] ?? "-";
             $customer_id = $current_customer ? $current_customer->get_id() : 0;
             if ($customer_id < 1) {
                 $customer_id = "";
@@ -343,6 +345,8 @@ if (!class_exists('AdmetricsDataStudio')) {
         data-ss-mpid="$ss_mpid"
         data-ss-tkpid="$ss_tkpid"
         data-ss-scpid="$ss_scpid"
+        data-ss-ob="$ss_ob"
+        data-ss-ga="$ss_ga"
 ></script>
 EOD;
         }
@@ -373,6 +377,8 @@ EOD;
             $ss_mpid = $current_settings["ss_mpid"] ?? "";
             $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
             $ss_scpid = $current_settings["ss_scpid"] ?? "";
+            $ss_ob = $current_settings["ss_ob"] ?? "-";
+            $ss_ga = $current_settings["ss_ga"] ?? "-";
             $order_id = $order->get_id();
             $order_number = $order->get_order_number();
             $customer_id = $order->get_customer_id();
@@ -430,6 +436,8 @@ EOD;
         data-ss-mpid="$ss_mpid"
         data-ss-tkpid="$ss_tkpid"
         data-ss-scpid="$ss_scpid"
+        data-ss-ob="$ss_ob"
+        data-ss-ga="$ss_ga"
 ></script>
 EOD;
         }

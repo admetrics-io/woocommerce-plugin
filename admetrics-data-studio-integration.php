@@ -16,6 +16,8 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
         private $ss_mpid = "";
         private $ss_tkpid = "";
         private $ss_scpid = "";
+        private $ss_ob = "-";
+        private $ss_ga = "-";
 
         /**
          * Init and hook in the integration.
@@ -44,6 +46,8 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
             $this->ss_mpid = $this->get_option('ss_mpid');
             $this->ss_tkpid = $this->get_option('ss_tkpid');
             $this->ss_scpid = $this->get_option('ss_scpid');
+            $this->ss_ob = $this->get_option('ss_ob');
+            $this->ss_ga = $this->get_option('ss_ga');
 
             // Actions.
             add_action('woocommerce_update_options_integration_' . $this->id, array($this, 'process_admin_options'));
@@ -125,6 +129,18 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
                     'title' => 'SS SCPID',
                     'type' => 'text',
                     'default' => '',
+                    'disabled' => true
+                ),
+                'ss_ob' => array(
+                    'title' => 'SS OB',
+                    'type' => 'text',
+                    'default' => '-',
+                    'disabled' => true
+                ),
+                'ss_ga' => array(
+                    'title' => 'SS GA',
+                    'type' => 'text',
+                    'default' => '-',
                     'disabled' => true
                 ),
             );
