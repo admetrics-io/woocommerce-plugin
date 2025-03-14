@@ -8,7 +8,7 @@
   "requires": "6.5",
   "tested": "6.5",
   "requires_php": "7.0",
-  "last_updated": "2025-03-14 12:11:28",
+  "last_updated": "2025-03-14 12:11:36",
   "homepage": "https://github.com/admetrics-io/woocommerce-plugin/",
   "sections": {
     "description": "Connects Admetrics Data Studio with your WooCommerce installation.",
