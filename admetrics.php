@@ -252,6 +252,12 @@ if (!class_exists('AdmetricsDataStudio')) {
 
         public function admetrics_wp_head()
         {
+            // make sure script is only executed once per page
+            if (defined('ADMETRICS_DATA_STUDIO_SCRIPT_INJECTED')) {
+                return;
+            }
+            define('ADMETRICS_DATA_STUDIO_SCRIPT_INJECTED', true);
+
             if (is_wc_endpoint_url('order-received')) {
                 return;
             }
