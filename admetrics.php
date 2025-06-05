@@ -256,6 +256,14 @@ if (!class_exists('AdmetricsDataStudio')) {
             }
             define('ADMETRICS_DATA_STUDIO_SCRIPT_INJECTED', true);
 
+            $integration_class = new AdmetricsDataStudio_Integration();
+            $option_key = $integration_class->get_option_key();
+            $current_settings = get_option($option_key, array());
+
+            if (!$current_settings["tracking_enabled"] || $current_settings["tracking_enabled"] == "no") {
+                return;
+            }
+
             if (is_wc_endpoint_url('order-received')) {
                 $order_id = "";
                 $order_number = "";
@@ -278,15 +286,6 @@ if (!class_exists('AdmetricsDataStudio')) {
                 if ($customer_id < 1) {
                     $customer_id = "";
                 }
-            }
-
-
-            $integration_class = new AdmetricsDataStudio_Integration();
-            $option_key = $integration_class->get_option_key();
-            $current_settings = get_option($option_key, array());
-
-            if (!$current_settings["tracking_enabled"] || $current_settings["tracking_enabled"] == "no") {
-                return;
             }
 
             $sid = $current_settings["sid"] ?? "";
