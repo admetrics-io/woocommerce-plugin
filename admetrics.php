@@ -264,14 +264,14 @@ if (!class_exists('AdmetricsDataStudio')) {
                 return;
             }
 
+            $order_id = "";
+            $order_number = "";
+            $customer_id = "";
             if (is_wc_endpoint_url('order-received')) {
-                $order_id = "";
-                $order_number = "";
-                $customer_id = "";
                 $order_id_from_url = wc_get_order_id_by_order_key($_GET['key']);
                 if (!empty($order_id_from_url)) {
                     $order = wc_get_order($order_id_from_url);
-                    if (!is_a($order, 'WC_Order')) {
+                    if (is_a($order, 'WC_Order')) {
                         $order_id = $order->get_id();
                         $order_number = $order->get_order_number();
                         $customer_id = $order->get_customer_id();
