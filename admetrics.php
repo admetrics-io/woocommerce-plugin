@@ -47,10 +47,8 @@ if (!class_exists('AdmetricsDataStudio')) {
             add_filter('plugins_api', array($this, 'info'), 20, 3);
             add_filter('site_transient_update_plugins', array($this, 'update'));
 
-
             add_action('upgrader_process_complete', array($this, 'purge'), 10, 2);
             add_action('wp_head', array($this, 'admetrics_wp_head'), 20);
-            add_action('woocommerce_thankyou', array($this, 'admetrics_woocommerce_thankyou'), 20, 1);
             add_action('plugins_loaded', array($this, 'init'));
         }
 
@@ -259,7 +257,27 @@ if (!class_exists('AdmetricsDataStudio')) {
             define('ADMETRICS_DATA_STUDIO_SCRIPT_INJECTED', true);
 
             if (is_wc_endpoint_url('order-received')) {
-                return;
+                $order_id = "";
+                $order_number = "";
+                $customer_id = "";
+                $order_id_from_url = wc_get_order_id_by_order_key($_GET['key']);
+                if (!empty($order_id_from_url)) {
+                    $order = wc_get_order($order_id_from_url);
+                    if (!is_a($order, 'WC_Order')) {
+                        $order_id = $order->get_id();
+                        $order_number = $order->get_order_number();
+                        $customer_id = $order->get_customer_id();
+                        if ($customer_id < 1) {
+                            $customer_id = md5($order_id) . "@order_id";
+                        }
+                    }
+                }
+            } else {
+                $current_customer = WC()->customer;
+                $customer_id = $current_customer ? $current_customer->get_id() : 0;
+                if ($customer_id < 1) {
+                    $customer_id = "";
+                }
             }
 
 
@@ -271,7 +289,6 @@ if (!class_exists('AdmetricsDataStudio')) {
                 return;
             }
 
-            $current_customer = WC()->customer;
             $sid = $current_settings["sid"] ?? "";
             $src = $current_settings["src"] ?? "";
             $endpoint = $current_settings["endpoint"] ?? "";
@@ -285,10 +302,6 @@ if (!class_exists('AdmetricsDataStudio')) {
             $ss_scpid = $current_settings["ss_scpid"] ?? "";
             $ss_ob = $current_settings["ss_scpid"] ?? "-";
             $ss_ga = $current_settings["ss_scpid"] ?? "-";
-            $customer_id = $current_customer ? $current_customer->get_id() : 0;
-            if ($customer_id < 1) {
-                $customer_id = "";
-            }
 
             $product_id = "";
             $product_type = "";
@@ -306,97 +319,6 @@ if (!class_exists('AdmetricsDataStudio')) {
                 }
             }
 
-            $page_title = get_the_title();
-            $currency = get_woocommerce_currency();
-            $cart_total_price = "";
-            $search_string = "";
-            $collection_id = "";
-            $collection = "";
-            $cart = "";
-
-            echo <<<EOD
-<script id="js-app-admq-data" type="application/json">
-{
-    "sid": "$sid",
-    "scid": "",
-    "cid": "$customer_id",
-    "oid": "",
-    "on": "",
-    "cim": "",
-    "et": "woocommerce",
-    "en": "",
-    "spt": "$product_type",
-    "sptt": "$page_title",
-    "sppt": "$product_title",
-    "spos": "$product_size",
-    "scr": "$currency",
-    "scpp": "$product_price",
-    "sctp": "$cart_total_price",
-    "sss": "$search_string",
-    "spi": "$product_id",
-    "sci": "$collection_id",
-    "scc": "$collection",
-    "sca": "$cart"
-}
-</script>
-<script id="js-app-admq-script"
-        type="application/javascript"
-        src="$src"
-        data-endpoint="$endpoint"
-        data-cn="$cn"
-        data-cv="$cv"
-        data-cv2="$cv2"
-        data-pa-vendor="$pa_vendor"
-        data-pa-mpid="$pa_mpid"
-        data-ss-mpid="$ss_mpid"
-        data-ss-tkpid="$ss_tkpid"
-        data-ss-scpid="$ss_scpid"
-        data-ss-ob="$ss_ob"
-        data-ss-ga="$ss_ga"
-></script>
-EOD;
-        }
-
-        public function admetrics_woocommerce_thankyou($order_id)
-        {
-            $order = wc_get_order($order_id);
-            if (!is_a($order, 'WC_Order')) {
-                return;
-            }
-
-            $integration_class = new AdmetricsDataStudio_Integration();
-            $option_key = $integration_class->get_option_key();
-            $current_settings = get_option($option_key, array());
-
-            if (!$current_settings["tracking_enabled"] || $current_settings["tracking_enabled"] == "no") {
-                return;
-            }
-
-            $sid = $current_settings["sid"] ?? "";
-            $src = $current_settings["src"] ?? "";
-            $endpoint = $current_settings["endpoint"] ?? "";
-            $cn = $current_settings["cn"] ?? "";
-            $cv = $current_settings["cv"] ?? "";
-            $cv2 = $current_settings["cv2"] ?? "";
-            $pa_vendor = $current_settings["pa_vendor"] ?? "";
-            $pa_mpid = $current_settings["pa_mpid"] ?? "";
-            $ss_mpid = $current_settings["ss_mpid"] ?? "";
-            $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
-            $ss_scpid = $current_settings["ss_scpid"] ?? "";
-            $ss_ob = $current_settings["ss_ob"] ?? "-";
-            $ss_ga = $current_settings["ss_ga"] ?? "-";
-            $order_id = $order->get_id();
-            $order_number = $order->get_order_number();
-            $customer_id = $order->get_customer_id();
-            if ($customer_id < 1) {
-                $customer_id = md5($order_id) . "@order_id";
-            }
-
-            $product_id = "";
-            $product_type = "";
-            $product_title = "";
-            $product_size = "";
-            $product_price = "";
             $page_title = get_the_title();
             $currency = get_woocommerce_currency();
             $cart_total_price = "";
@@ -431,7 +353,7 @@ EOD;
 }
 </script>
 <script id="js-app-admq-script"
-        type="application/javascript"  
+        type="application/javascript"
         src="$src"
         data-endpoint="$endpoint"
         data-cn="$cn"
@@ -447,7 +369,6 @@ EOD;
 ></script>
 EOD;
         }
-
     }
 
     new AdmetricsDataStudio();
