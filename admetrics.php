@@ -300,8 +300,8 @@ if (!class_exists('AdmetricsDataStudio')) {
             $ss_mpid = $current_settings["ss_mpid"] ?? "";
             $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
             $ss_scpid = $current_settings["ss_scpid"] ?? "";
-            $ss_ob = $current_settings["ss_scpid"] ?? "-";
-            $ss_ga = $current_settings["ss_scpid"] ?? "-";
+            $ss_ob = $current_settings["ss_ob"] ?? "-";
+            $ss_ga = $current_settings["ss_ga"] ?? "-";
 
             $product_id = "";
             $product_type = "";
