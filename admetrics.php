@@ -326,6 +326,8 @@ if (!class_exists('AdmetricsDataStudio')) {
             $collection = "";
             $cart = "";
 
+            $version = $this->version;
+
             echo <<<EOD
 <script id="js-app-admq-data" type="application/json">
 {
@@ -365,6 +367,7 @@ if (!class_exists('AdmetricsDataStudio')) {
         data-ss-scpid="$ss_scpid"
         data-ss-ob="$ss_ob"
         data-ss-ga="$ss_ga"
+        data-version="$version"
 ></script>
 EOD;
         }
