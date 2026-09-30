@@ -15,7 +15,6 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
         private $pa_mpid = "";
         private $ss_mpid = "";
         private $ss_tkpid = "";
-        private $ss_scpid = "";
         private $ss_ob = "-";
         private $ss_ga = "-";
 
@@ -45,7 +44,6 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
             $this->pa_mpid = $this->get_option('pa_mpid');
             $this->ss_mpid = $this->get_option('ss_mpid');
             $this->ss_tkpid = $this->get_option('ss_tkpid');
-            $this->ss_scpid = $this->get_option('ss_scpid');
             $this->ss_ob = $this->get_option('ss_ob');
             $this->ss_ga = $this->get_option('ss_ga');
 
@@ -121,12 +119,6 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
                 ),
                 'ss_tkpid' => array(
                     'title' => 'SS TKPID',
-                    'type' => 'text',
-                    'default' => '',
-                    'disabled' => true
-                ),
-                'ss_scpid' => array(
-                    'title' => 'SS SCPID',
                     'type' => 'text',
                     'default' => '',
                     'disabled' => true

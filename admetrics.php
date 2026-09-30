@@ -298,7 +298,6 @@ if (!class_exists('AdmetricsDataStudio')) {
             $pa_mpid = $current_settings["pa_mpid"] ?? "";
             $ss_mpid = $current_settings["ss_mpid"] ?? "";
             $ss_tkpid = $current_settings["ss_tkpid"] ?? "";
-            $ss_scpid = $current_settings["ss_scpid"] ?? "";
             $ss_ob = $current_settings["ss_ob"] ?? "-";
             $ss_ga = $current_settings["ss_ga"] ?? "-";
 
@@ -364,7 +363,6 @@ if (!class_exists('AdmetricsDataStudio')) {
         data-pa-mpid="$pa_mpid"
         data-ss-mpid="$ss_mpid"
         data-ss-tkpid="$ss_tkpid"
-        data-ss-scpid="$ss_scpid"
         data-ss-ob="$ss_ob"
         data-ss-ga="$ss_ga"
         data-version="$version"
