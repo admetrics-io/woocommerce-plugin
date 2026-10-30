@@ -1,5 +1,12 @@
-*** WooCommerce Extension Name Changelog ***
+*** Admetrics Data Studio Changelog ***
 
-YYYY-MM-DD - version 1.0.0
-* Initial release
-* Changelog formatted according to https://developer.woocommerce.com/docs/formatting-for-changelog-txt/
+2026-10-19 - version 0.6.0
+* Security - Add a scoped tracking-settings connection with administrator approval; new installations require authorization, and existing shops can migrate from legacy access without granting general WooCommerce write access.
+* Security - Keep authorization required after disconnect; protect concurrent approvals and revocation with generation-bound atomic state changes.
+* Reliability - Verify connections asynchronously and show pending confirmation separately from successful settings delivery.
+* Settings - Focus the integration page on connection/tracking status and move read-only diagnostics into Technical details.
+* Fix - Encode tracking JSON and HTML attributes safely when configuration or product titles contain quotes.
+* Maintenance - Standardize installable plugin packages and release metadata.
+* Compatibility - Require WordPress 7.0.7 or later and PHP 8.2 or later; tested with WooCommerce 11.2.1.
+* Fix - Track orders on custom confirmation pages that expose WooCommerce's official page filters or confirmation hooks.
+* Tracking - Defer tracker execution until the document is parsed so confirmation hooks can supply order identity before the first event.

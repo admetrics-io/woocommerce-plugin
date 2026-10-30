@@ -11,9 +11,9 @@
  * Plugin Name:       Admetrics Data Studio
  * Plugin URI:        https://github.com/admetrics-io/woocommerce-plugin
  * Description:       Connects Admetrics Data Studio with your WooCommerce installation.
- * Version:           0.5.0
- * Requires at least: 6.3
- * Requires PHP:      7.0
+ * Version:           0.6.0
+ * Requires at least: 7.0.7
+ * Requires PHP:      8.2
  * Requires Plugins:  woocommerce
  * Author:            Admetrics GmbH
  * Author URI:        https://www.admetrics.io
@@ -29,12 +29,15 @@ if (!defined('ABSPATH')) {
 if (!class_exists('AdmetricsDataStudio')) {
     class AdmetricsDataStudio
     {
-        const VERSION = "0.5.0";
+        const VERSION = "0.6.0";
 
         public $plugin_slug;
         public $version;
         public $cache_key;
         public $cache_allowed;
+
+        private $tracking_order = null;
+        private $tracking_data_rendered = false;
 
         public function __construct()
         {
@@ -49,28 +52,23 @@ if (!class_exists('AdmetricsDataStudio')) {
 
             add_action('upgrader_process_complete', array($this, 'purge'), 10, 2);
             add_action('wp_head', array($this, 'admetrics_wp_head'), 20);
+            add_action('woocommerce_before_thankyou', array($this, 'track_confirmation_order'));
+            add_action('woocommerce_thankyou', array($this, 'track_confirmation_order'));
             add_action('plugins_loaded', array($this, 'init'));
         }
 
         public function init()
         {
             if (class_exists('WC_Integration')) {
+                require_once __DIR__ . '/admetrics-data-studio-connection.php';
+                AdmetricsDataStudio_Connection::init();
                 require_once __DIR__ . '/admetrics-data-studio-integration.php';
                 add_filter('woocommerce_integrations', array($this, 'add_integration'));
                 add_action('rest_api_init', function () {
                     register_rest_route('admetrics-data-studio/v1', '/settings', array(
                         'methods' => 'POST',
                         'callback' => [AdmetricsDataStudio_Integration::class, 'update_settings'],
-                        'permission_callback' => function (){
-//                            if (!wc_rest_check_manager_permissions('settings', 'read')) {
-//                                return new WP_Error(
-//                                    'admetrics_data_studio_401',
-//                                    __('Not allowed.'),
-//                                    array('status' => rest_authorization_required_code())
-//                                );
-//                            }
-                            return true;
-                        },
+                        'permission_callback' => [AdmetricsDataStudio_Connection::class, 'settings_permission'],
                     ));
                     add_filter('woocommerce_rest_prepare_shop_order_object', [$this, 'add_customer_order_index']);
                 }, 20);
@@ -248,6 +246,77 @@ if (!class_exists('AdmetricsDataStudio')) {
             }
         }
 
+        private function get_tracking_order(): ?WC_Order
+        {
+            if ($this->tracking_order) {
+                return $this->tracking_order;
+            }
+            if (!is_order_received_page() && !is_wc_endpoint_url('order-received')) {
+                return null;
+            }
+
+            $order_key = isset($_GET['key']) && is_string($_GET['key'])
+                ? wc_clean(wp_unslash($_GET['key'])) : '';
+            $order_key = apply_filters('woocommerce_thankyou_order_key', $order_key);
+            if (!is_string($order_key) || $order_key === '') {
+                return null;
+            }
+            $order_id = wc_get_order_id_by_order_key($order_key);
+            $order = $order_id ? wc_get_order($order_id) : null;
+            if (!is_a($order, 'WC_Order') || !hash_equals($order->get_order_key(), $order_key)) {
+                return null;
+            }
+
+            $this->tracking_order = $order;
+            return $order;
+        }
+
+        private function get_order_tracking_data(WC_Order $order): array
+        {
+            $customer_id = $order->get_customer_id();
+            if ($customer_id < 1) {
+                $customer_id = md5($order->get_id()) . "@order_id";
+            }
+            return array(
+                'oid' => (string) $order->get_id(),
+                'on' => (string) $order->get_order_number(),
+                'cid' => (string) $customer_id,
+            );
+        }
+
+        public function track_confirmation_order($order_id)
+        {
+            // The two hooks can fire for the same order, including in blocks.
+            if ($this->tracking_order || (!is_int($order_id) && !(is_string($order_id) && ctype_digit($order_id)))) {
+                return;
+            }
+            $order = wc_get_order($order_id);
+            if (!is_a($order, 'WC_Order')) {
+                return;
+            }
+            $this->tracking_order = $order;
+            if (!$this->tracking_data_rendered) {
+                return;
+            }
+
+            $order_data = wp_json_encode($this->get_order_tracking_data($order), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+            // Update the head's JSON before the deferred tracker executes.
+            echo <<<EOD
+<script>
+(function () {
+    var element = document.getElementById('js-app-admq-data');
+    if (!element) return;
+    var data = JSON.parse(element.textContent);
+    var order = $order_data;
+    data.oid = order.oid;
+    data.on = order.on;
+    data.cid = order.cid;
+    element.textContent = JSON.stringify(data);
+}());
+</script>
+EOD;
+        }
+
         public function admetrics_wp_head()
         {
             // make sure script is only executed once per page
@@ -260,26 +329,19 @@ if (!class_exists('AdmetricsDataStudio')) {
             $option_key = $integration_class->get_option_key();
             $current_settings = get_option($option_key, array());
 
-            if (!$current_settings["tracking_enabled"] || $current_settings["tracking_enabled"] == "no") {
+            if (empty($current_settings['tracking_enabled']) || $current_settings['tracking_enabled'] === 'no') {
                 return;
             }
 
             $order_id = "";
             $order_number = "";
             $customer_id = "";
-            if (is_wc_endpoint_url('order-received')) {
-                $order_id_from_url = wc_get_order_id_by_order_key($_GET['key']);
-                if (!empty($order_id_from_url)) {
-                    $order = wc_get_order($order_id_from_url);
-                    if (is_a($order, 'WC_Order')) {
-                        $order_id = $order->get_id();
-                        $order_number = $order->get_order_number();
-                        $customer_id = $order->get_customer_id();
-                        if ($customer_id < 1) {
-                            $customer_id = md5($order_id) . "@order_id";
-                        }
-                    }
-                }
+            $order = $this->get_tracking_order();
+            if ($order) {
+                $order_data = $this->get_order_tracking_data($order);
+                $order_id = $order_data['oid'];
+                $order_number = $order_data['on'];
+                $customer_id = $order_data['cid'];
             } else {
                 $current_customer = WC()->customer;
                 $customer_id = $current_customer ? $current_customer->get_id() : 0;
@@ -326,48 +388,27 @@ if (!class_exists('AdmetricsDataStudio')) {
             $cart = "";
 
             $version = $this->version;
+            $this->tracking_data_rendered = true;
 
-            echo <<<EOD
-<script id="js-app-admq-data" type="application/json">
-{
-    "sid": "$sid",
-    "scid": "",
-    "cid": "$customer_id",
-    "oid": "$order_id",
-    "on": "$order_number",
-    "cim": "",
-    "et": "woocommerce",
-    "en": "",
-    "spt": "$product_type",
-    "sptt": "$page_title",
-    "sppt": "$product_title",
-    "spos": "$product_size",
-    "scr": "$currency",
-    "scpp": "$product_price",
-    "sctp": "$cart_total_price",
-    "sss": "$search_string",
-    "spi": "$product_id",
-    "sci": "$collection_id",
-    "scc": "$collection",
-    "sca": "$cart"
-}
-</script>
-<script id="js-app-admq-script"
-        type="application/javascript"
-        src="$src"
-        data-endpoint="$endpoint"
-        data-cn="$cn"
-        data-cv="$cv"
-        data-cv2="$cv2"
-        data-pa-vendor="$pa_vendor"
-        data-pa-mpid="$pa_mpid"
-        data-ss-mpid="$ss_mpid"
-        data-ss-tkpid="$ss_tkpid"
-        data-ss-ob="$ss_ob"
-        data-ss-ga="$ss_ga"
-        data-version="$version"
-></script>
-EOD;
+            $payload = [
+                'sid' => $sid, 'scid' => '', 'cid' => (string)$customer_id, 'oid' => (string)$order_id,
+                'on' => (string)$order_number, 'cim' => '', 'et' => 'woocommerce', 'en' => '',
+                'spt' => $product_type, 'sptt' => $page_title, 'sppt' => $product_title,
+                'spos' => $product_size, 'scr' => $currency, 'scpp' => $product_price,
+                'sctp' => $cart_total_price, 'sss' => $search_string, 'spi' => (string)$product_id,
+                'sci' => $collection_id, 'scc' => $collection, 'sca' => $cart,
+            ];
+            echo '<script id="js-app-admq-data" type="application/json">'
+                . wp_json_encode($payload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . '</script>';
+            echo '<script id="js-app-admq-script" defer type="application/javascript" src="' . esc_url($src) . '"';
+            foreach ([
+                'endpoint' => $endpoint, 'cn' => $cn, 'cv' => $cv, 'cv2' => $cv2,
+                'pa-vendor' => $pa_vendor, 'pa-mpid' => $pa_mpid, 'ss-mpid' => $ss_mpid,
+                'ss-tkpid' => $ss_tkpid, 'ss-ob' => $ss_ob, 'ss-ga' => $ss_ga, 'version' => $version,
+            ] as $name => $value) {
+                echo ' data-' . $name . '="' . esc_attr($value) . '"';
+            }
+            echo '></script>';
         }
     }
 

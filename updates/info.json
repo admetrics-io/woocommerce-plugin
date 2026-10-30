@@ -3,17 +3,17 @@
   "slug": "admetrics-data-studio",
   "author": "Admetrics GmbH",
   "author_profile": "https://www.admetrics.io/",
-  "version": "0.5.0",
-  "download_url": "https://github.com/admetrics-io/woocommerce-plugin/releases/download/0.5.0/admetrics-data-studio.zip",
-  "requires": "6.5",
-  "tested": "6.5",
-  "requires_php": "7.0",
-  "last_updated": "2026-09-30 11:44:31",
+  "version": "0.6.0",
+  "download_url": "https://github.com/admetrics-io/woocommerce-plugin/releases/download/0.6.0/admetrics-data-studio.zip",
+  "requires": "7.0.7",
+  "tested": "7.1.3",
+  "requires_php": "8.2",
+  "last_updated": "2026-10-19 03:56:29",
   "homepage": "https://github.com/admetrics-io/woocommerce-plugin/",
   "sections": {
     "description": "Connects Admetrics Data Studio with your WooCommerce installation.",
     "installation": "",
-    "changelog": "Will be released with 1.0.0"
+    "changelog": "<h4>0.6.0</h4><ul><li>Add a scoped tracking-settings connection with administrator approval, secure defaults for new installations, and an opt-in migration for existing legacy connections.</li><li>Require authorization permanently after approval, including after disconnect; handle concurrent approval/revocation safely.</li><li>Verify connections asynchronously and show connection/tracking status with collapsed technical details.</li><li>Encode tracking JSON and attributes safely for quoted configuration and product titles.</li><li>Standardize installable plugin packages and release metadata.</li><li>Require WordPress 7.0.7 or later and PHP 8.2 or later; tested with WooCommerce 11.2.1.</li><li>Track orders on custom confirmation pages that expose WooCommerce's official page filters or confirmation hooks.</li><li>Defer tracker execution until the document is parsed so confirmation hooks can supply order identity before the first event.</li></ul>"
   },
   "banners": {
     "low": "https://raw.githubusercontent.com/admetrics-io/woocommerce-plugin/main/updates/admetrics-low-resolution.png",

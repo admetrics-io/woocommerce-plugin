@@ -1,8 +1,0 @@
-/.idea/
-/node_modules/
-/playground/
-/vendor/
-/.wp-env.override.json
-/admetrics-data-studio.zip
-/composer.lock
-/package-lock.json
