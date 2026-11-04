@@ -1,5 +1,10 @@
 *** Admetrics Data Studio Changelog ***
 
+2026-11-04 - version 0.7.0
+* Tracking - Support custom thank-you URLs using a regex matching the path and query string, with configurable order ID and order key parameters.
+* Settings - Add optional shop-local confirmation settings, managed in WooCommerce independently of Admetrics tracking settings.
+* Security - Require matching WooCommerce order credentials and limit regex processing; request no caching on matching pages. External page caches and CDNs still require exclusion.
+
 2026-10-19 - version 0.6.0
 * Security - Add a scoped tracking-settings connection with administrator approval; new installations require authorization, and existing shops can migrate from legacy access without granting general WooCommerce write access.
 * Security - Keep authorization required after disconnect; protect concurrent approvals and revocation with generation-bound atomic state changes.

@@ -1,71 +1,47 @@
-# WooCommerce Plugin: Admetrics Data Studio
+# Admetrics Data Studio for WooCommerce
 
-WooCommerce plugin adding the Admetrics Tracking Pixel to your WooCommerce installation.
+Adds Admetrics tracking to your WooCommerce shop.
 
-## Usage
+## Install and update
 
-### Installation
+Download the [latest release](https://github.com/admetrics-io/woocommerce-plugin/releases/latest)
+and upload it in WordPress. Future updates appear under **Plugins → Installed Plugins**.
 
-Download the latest version from https://github.com/admetrics-io/woocommerce-plugin/releases/latest and upload it to
-your WordPress installation.
+## Connect tracking settings
 
-### Updating
+1. Open **WooCommerce → Settings → Integration → Admetrics Data Studio**.
+2. Select **Connect to Admetrics**, or **Secure connection** for an existing legacy connection.
+3. Sign in to Admetrics, select your client and WooCommerce datasource, then return to the shop to approve.
 
-Updates can be done within your WordPress Admin Interface. Go to "Plugins > Installed Plugins", find "Admetrics Data
-Studio" and click on "Update now".
+Use an account allowed to manage WooCommerce settings. Both services need HTTPS,
+and Admetrics must be able to reach the shop's REST endpoints. Approval links expire after ten minutes.
 
-### Authorizing tracking-settings updates
+This connection manages tracking settings, including the tracking script—not orders or products.
+Order imports use separate read-only access. **Disconnect tracking settings** revokes the connection
+without removing saved settings or stopping order imports. Securing a legacy connection is one-way;
+updating the plugin alone does not secure it.
 
-WooCommerce order imports use read-only WooCommerce API access. New installations require a separate,
-settings-only connection for remote tracking-configuration changes. Existing installations can keep
-their legacy connection until the shop administrator enables authorization:
+Use **Manage tracking in Admetrics** to change tracking settings. The plugin shows connection status
+and the last settings update; these do not confirm that tracking events are arriving.
 
-1. Open **WooCommerce → Settings → Integration → Admetrics Data Studio** and select **Secure connection** (existing shops) or **Connect to Admetrics** (new installations).
-2. Sign in to Admetrics, select the correct client and choose the existing WooCommerce datasource for this shop.
-3. Continue to the shop and approve the tracking-settings connection using an account allowed to manage WooCommerce settings.
+## Custom thank-you pages
 
-The connection allows Admetrics to change its tracking configuration, including the tracking script source.
-It does not grant access to change WooCommerce orders, products or other WordPress settings.
-The approval link expires after ten minutes; start again if it expires. No API keys need to be copied.
+Standard WooCommerce confirmation pages work automatically. For a custom page, enable
+**Custom thank-you page** support on the plugin settings page and enter:
 
-Use **Disconnect tracking settings** on the same plugin page to revoke access immediately. Saved tracking
-settings remain in place, and read-only order imports keep their separate authorization. Connecting again
-replaces the previous tracking-settings credential. Deleting or removing settings-management permission
-from the approving WordPress account also invalidates its credential.
+| Setting | Example |
+| --- | --- |
+| URL regex | `^/danke/?(?:\?.*)?$` |
+| Order ID parameter | `order_id` |
+| Order key parameter | `auth` (or `key`) |
 
-Enabling authorization is a one-way change. Disconnecting, failed authentication or a lost backend
-response never restores unauthenticated updates. Legacy connections still accept unauthenticated
-tracking-settings changes until they are secured; updating the plugin alone does not secure an existing
-connection. New installations never start in legacy mode.
+Select **Save custom thank-you page settings**. This optional configuration stays in WordPress,
+not Admetrics. Disabling it preserves the settings and standard confirmation tracking.
 
-### Settings page
+The case-sensitive regex matches the URL-encoded **path and query string**, excluding the domain
+and fragment. Enter it without PHP delimiters or modifiers; use `^` and `$` to anchor it.
+Enter parameter names, not actual IDs or keys. An order is tracked only when its ID and key match.
+Invalid patterns cannot be saved; regex errors or execution limits produce no custom order match.
 
-The integration page shows the connection status, the Admetrics client and datasource, and whether
-tracking is enabled in the saved shop configuration. **Manage tracking in Admetrics** opens the
-datasource configuration in a new tab. Connect/reconnect stays in the same tab and returns to the shop
-for approval; the Admetrics connection screen also offers **Back to shop settings** for each matching
-datasource. **Technical details** expands the read-only configuration values used for
-troubleshooting. Tracking values are managed in Admetrics rather than edited on this page.
-
-- **Legacy connection:** existing unauthenticated updates continue; select **Secure connection** to migrate.
-- **Not connected:** authorization is required, but no active tracking-settings credential is available.
-- **Awaiting confirmation:** approval is saved; background verification or the first settings delivery
-  has not finished. A successfully authenticated backend update confirms the connection.
-- **Connected:** Admetrics confirmed the connection. The page separately shows the last settings update
-  received for this credential; this is not a live check of tracking-event delivery.
-- **Reconnect required:** the approving WordPress account no longer has permission to manage WooCommerce.
-
-Confirmation metadata is tied to the current credential and stored separately from authorization.
-Disconnecting revokes authorization immediately, even if a previous callback finishes later.
-Duplicate approval submissions reuse the same credential; a delayed approval cannot overwrite a
-disconnect or a newer connection. If a callback response is lost, retrying does not reopen legacy access.
-
-Both the shop and Admetrics backend must have valid HTTPS certificates. The plugin defaults to the
-production Admetrics service. Server administrators can configure a trusted QA deployment with the
-`ADMETRICS_API_ORIGIN` and `ADMETRICS_APP_ORIGIN` constants in `wp-config.php`; these values must
-never come from a request or from tracking settings.
-
-The backend must be able to reach the shop's public REST endpoints. Different storefront and WordPress
-subdirectory paths are supported on the same HTTPS origin. If a proxy terminates HTTPS, WordPress must
-be configured to recognize HTTPS correctly. A connection error does not revoke read-only order imports
-or remove previously saved tracking settings.
+**Exclude matching pages from page caches and CDNs.** Place a test order to verify tracking and
+reporting, including consent behavior. Historical tracking is not restored.

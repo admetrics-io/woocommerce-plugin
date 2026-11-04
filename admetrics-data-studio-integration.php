@@ -173,6 +173,7 @@ if (!class_exists('AdmetricsDataStudio_Integration')) {
                 echo '<tr><th scope="row">' . esc_html($field['title']) . '</th><td><code>' . esc_html((string)$value) . '</code></td></tr>';
             }
             echo '</tbody></table></details>';
+            AdmetricsDataStudio_Custom_Confirmation::render();
         }
 
         public static function update_settings($request)

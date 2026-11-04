@@ -11,7 +11,7 @@
  * Plugin Name:       Admetrics Data Studio
  * Plugin URI:        https://github.com/admetrics-io/woocommerce-plugin
  * Description:       Connects Admetrics Data Studio with your WooCommerce installation.
- * Version:           0.6.0
+ * Version:           0.7.0
  * Requires at least: 7.0.7
  * Requires PHP:      8.2
  * Requires Plugins:  woocommerce
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 if (!class_exists('AdmetricsDataStudio')) {
     class AdmetricsDataStudio
     {
-        const VERSION = "0.6.0";
+        const VERSION = "0.7.0";
 
         public $plugin_slug;
         public $version;
@@ -62,6 +62,8 @@ if (!class_exists('AdmetricsDataStudio')) {
             if (class_exists('WC_Integration')) {
                 require_once __DIR__ . '/admetrics-data-studio-connection.php';
                 AdmetricsDataStudio_Connection::init();
+                require_once __DIR__ . '/admetrics-custom-confirmation.php';
+                AdmetricsDataStudio_Custom_Confirmation::init();
                 require_once __DIR__ . '/admetrics-data-studio-integration.php';
                 add_filter('woocommerce_integrations', array($this, 'add_integration'));
                 add_action('rest_api_init', function () {
@@ -252,7 +254,8 @@ if (!class_exists('AdmetricsDataStudio')) {
                 return $this->tracking_order;
             }
             if (!is_order_received_page() && !is_wc_endpoint_url('order-received')) {
-                return null;
+                $this->tracking_order = AdmetricsDataStudio_Custom_Confirmation::order();
+                return $this->tracking_order;
             }
 
             $order_key = isset($_GET['key']) && is_string($_GET['key'])
